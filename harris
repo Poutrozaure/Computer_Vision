@@ -1,0 +1,40 @@
+def harris(img):
+  #Calculation of Sobel filter
+  GX2,GY2,GXY,temp1,temp2 = GradCal_harris(img)
+
+  #Applying gaussian filter to derivatives
+  gauss_GX2 = gaussian_filt(GX2)
+  gauss_GY2 = gaussian_filt(GY2)
+  gauss_GXY = gaussian_filt(GXY)
+
+  A=gauss_GX2
+  B=gauss_GY2
+  C=gauss_GXY
+
+  #calculation of cornerness Harris
+
+  lamb = 0.04
+  x,y = img.shape
+  Cornerness=np.zeros((x,y))
+  for i in range(0,x):
+    for j in range(0,y):
+      #cornerness formula = determinant of H - lambda * Trace of H
+      Cornerness[i,j] = ((A[i,j]*B[i,j]) - (C[i,j]*C[i,j])) - lamb * (A[i,j]+B[i,j])**2
+
+  #plt.figure()
+  #plt.imshow(Cornerness,cmap='gray')
+  #plt.title('cornerness')
+  #print(Cornerness)
+
+  maximum = np.max(Cornerness)
+  limit = maximum/7
+  Cornerness[Cornerness<limit]=0
+
+  plt.figure()
+  plt.imshow(Cornerness)
+  plt.title('cornerness remodeled')
+
+  result_cornerness = harris_hog(Cornerness,img)
+
+  #print(result_cornerness)
+  return (result_cornerness)
