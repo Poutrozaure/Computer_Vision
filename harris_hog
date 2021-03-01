@@ -1,0 +1,13 @@
+def harris_hog (corner,image):
+  x,y = corner.shape
+  index=0
+  zeropad_image = np.zeros((x+50,y+50))
+  zeropad_image[25:x+25,25:y+25] = image
+  harris_hog_result=[]
+  for i in range(0,x):
+    for j in range(0,y):
+      if corner[i,j]!= 0: # corner point
+        hog_result =hog(zeropad_image[i:i+50,j:j+50],2,9) #we do this because of zero padding, the pixel coordonate are in center 25:25
+        harris_hog_result.append ([i, j, hog_result])
+  harris_hog_result = np.array(harris_hog_result)
+  return harris_hog_result
