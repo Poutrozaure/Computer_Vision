@@ -1,0 +1,24 @@
+def gaussian_filt(image):
+  x,y=image.shape
+
+  zero_pad = np.zeros((x+4,y+4))
+  zero_pad[2:x+2,2:y+2] = image
+  filtered_result=np.zeros((x,y))
+
+  GAUSSIAN_FILTER = [[1, 4, 6, 4, 1],
+   [4, 16, 24, 16, 4],
+   [6, 24, 36, 24, 6],
+   [4, 16, 24, 16, 4],
+   [1, 4, 6, 4, 1]]
+                   
+  for i in range(0,x):
+    for j in range (0,y):
+      filtered_result[i,j]= ((GAUSSIAN_FILTER*zero_pad[i:i+5,j:j+5]).sum())*(1/256)
+
+  #plt.figure()
+  #plt.imshow(image,cmap='gray')
+  #plt.title('input')   
+  #plt.figure()
+  #plt.imshow(filtered_result,cmap='gray')
+  #plt.title('resutlt')
+  return np.array(filtered_result)  
