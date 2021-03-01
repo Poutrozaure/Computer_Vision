@@ -1,0 +1,45 @@
+def GradCal_harris (image):
+  x,y=image.shape
+  #print(x)
+  #print(y)
+
+  Matrix_SobelX = [[-1, 0, 1], 
+                  [-2, 0, 2],
+                  [-1, 0, 1]]
+
+  Matrix_SobelY = [[-1, -2, -1], 
+                  [0, 0, 0],
+                  [1, 2, 1]]
+
+  zero_pad = np.zeros((x+2,y+2)) #create zero pad size of our image
+  #value padding step
+  zero_pad[0,1:y+1] = image[0,0:y]
+  zero_pad[1:x+1,0] = image[0:x,0]
+  zero_pad[1:x+1,y+1] = image[0:x,y-1]
+  zero_pad[x+1,1:y+1] = image[x-1,0:y]
+  zero_pad[1:x+1,1:y+1] = image
+
+  GX = np.zeros((x,y))
+  GY = np.zeros((x,y))
+
+  for i in range(0,x):
+    for j in range(0,y):
+      GX[i,j]= (Matrix_SobelX*zero_pad[i:i+3,j:j+3]).sum()
+      GY[i,j]= (Matrix_SobelY*zero_pad[i:i+3,j:j+3]).sum()
+
+
+
+  ######################### CALCULATION OF MAGNITUDE AND ORIENTATION ###########
+  magnitude = np.zeros((x,y))
+  orientation = np.zeros((x,y))
+
+  magnitude = np.sqrt((GX*GX)+(GY*GY))
+  #plt.figure()
+  #plt.imshow(magnitude,cmap='gray')
+  #plt.title('magnitude')
+  gx2=GX*GX
+  gy2=GY*GY
+  gxy=GX*GY
+  #direction=np.arctan2(sobely,sobelx)*(180/np.pi)%180
+  orientation=np.arctan2(GY,GX)*(180/np.pi)%180  #(180/np.pi) to get radian to degrees and %180 to get from 0 to 180
+  return gx2,gy2,gxy,magnitude,orientation
