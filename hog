@@ -1,0 +1,24 @@
+def hog (image,cell,bin):
+  x,y = image.shape
+  bin_step = int(180/bin)
+  result = [[0] * bin for m in range(cell*cell)]
+  gx2,gy2,gxy,mag_temp,orient_temp = GradCal_harris(image)
+  cell_x=int(x/cell)
+  cell_y=int(y/cell)
+  cell_counter =0
+  #FIND GOOD BIN FOR EACH PIXEL GRADIENT
+  for a in range(0,y,cell_y):
+    for b in range(0,x,cell_x):
+      for i in range(a,a+(cell_y-1)):
+        for j in range(b,b+(cell_x-1)):
+          index=int(orient_temp[i,j]/bin_step)
+          result[cell_counter][index]+=mag_temp[i,j]
+      cell_counter = cell_counter + 1
+  
+  result = np.array(result,dtype='f') 
+
+  #NORMALYZE VECTOR OF BINS MAGNITUDE
+  for z in range (0,(cell*cell)-1):
+    result[z,:]=result[z,:]/max(result[z,:])
+  
+  return result
